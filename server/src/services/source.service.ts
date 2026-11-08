@@ -1,8 +1,9 @@
 import { uploadPdfToCloudinary } from "../lib/cloudinary.js";
-import { scrapeWebsite } from "../lib/firecrawl.js";
+import {scrapeWebsite} from "../lib/firecrawl.js";
 import { extractPdfFromBuffer } from "../lib/pdf.js";
-import { enqueueSourceProcessing } from "../lib/source-events.js";
 import { fetchYoutubeTranscript } from "../lib/youtube.js";
+// import { enqueueSourceProcessing } from "../lib/source-events.js";
+// import { fetchYoutubeTranscript } from "../lib/youtube.js";
 import {
     createSourceRecord,
     deleteSourceRecord,
@@ -11,7 +12,8 @@ import {
     type SourceRecord,
 } from "../repository/source.repository.js";
 import { NotFoundError } from "../types/app-error.js";
-import { CreateSourceInput, ImportWebsiteInput, ImportYoutubeInput, ListSourcesQuery } from "../validators/source.validator.js";
+import type { CreateSourceInput, ImportWebsiteInput, ImportYoutubeInput, ListSourcesQuery } from "../validators/source.validator.js";
+// import { CreateSourceInput, ImportWebsiteInput, ImportYoutubeInput, ListSourcesQuery } from "../validators/source.validator.js";
 import { getWorkspaceByIdForUser } from "./workspace.services.js";
 
 async function assertWorkspaceAccess(workspaceId: string, userId: string) {
@@ -21,12 +23,12 @@ async function assertWorkspaceAccess(workspaceId: string, userId: string) {
 async function createAndProcessSource(
     data: Parameters<typeof createSourceRecord>[0],
 ) {
-    const source = await createSourceRecord(data); //
+    const source = await createSourceRecord(data); 
 
-    await enqueueSourceProcessing({
-        sourceId: source.id,
-        workspaceId: source.workspaceId,
-    });
+    // await enqueueSourceProcessing({
+    //     sourceId: source.id,
+    //     workspaceId: source.workspaceId,
+    // });
 
     return source;
 }
@@ -134,6 +136,7 @@ export async function uploadPdfSource(
     let pageCount: number | undefined;
 
     try {
+        // extracting the information presnt in the pdf
         const extracted = await extractPdfFromBuffer(file.buffer);
         content = extracted.text;
         pageCount = extracted.pageCount;
